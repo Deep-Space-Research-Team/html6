@@ -1,84 +1,280 @@
-# HTML6 — Python-Native Web (Experimental)
+# HTML6 — A Python-First Experiment for the Web
 
-HTML6 is an experimental framework concept for building interactive web pages with **Python application code** in `.psc` files. It keeps HTML for structure and CSS for presentation, and uses [Pyodide](https://pyodide.org/) to execute Python in WebAssembly in the browser.
+**Exploring a new way to build web applications with Python.**
 
-> **Status:** Early prototype / educational project. HTML6 is not an official HTML standard and is not yet a production-ready replacement for JavaScript.
+HTML6 is an experimental, open-source project by **Deep Space Research Team** that explores a Python-first development workflow for web applications. The goal is to let developers write application logic in Python while continuing to use HTML for structure and CSS for styling.
 
-## What is included?
+Rather than replacing browser technologies, HTML6 experiments with connecting Python to the browser through **Pyodide and WebAssembly**, with a lightweight JavaScript runtime to initialize the environment.
 
-- A working text-transformer demo.
-- `html6.js`, a small bootstrap engine that loads Pyodide and executes external PSC scripts.
-- `app.psc`, Python code that listens for a click and updates the DOM.
-- A beginner learning path and troubleshooting guide.
-- A GitHub Pages workflow for publishing the static demo.
+<p align="center">
+  <a href="https://deep-space-research-team.github.io/html6/">
+    <strong>🌐 Visit the Website</strong>
+  </a>
+  ·
+  <a href="https://github.com/Deep-Space-Research-Team/html6">
+    <strong>💻 Explore the Source Code</strong>
+  </a>
+</p>
 
-## Try it locally
+---
 
-Requirements: Python 3.9+ (used only for the local static server), a modern browser, and an internet connection to download Pyodide from its CDN.
+## 🚀 Project Vision
 
-1. Download or clone this repository.
-2. Open a terminal in the project folder.
-3. Start a local web server:
+Web development traditionally relies on JavaScript for browser-side application logic. HTML6 explores an alternative workflow where Python takes a more central role.
 
-   ```bash
-   python -m http.server 8000
-   ```
+The project follows three core principles:
 
-4. Visit <http://localhost:8000>.
-5. Enter text and select **Transform with Python**.
+- **HTML for structure** — Define the elements of your application.
+- **CSS for presentation** — Control the visual design and layout.
+- **Python for application logic** — Experiment with interactions and behavior using Python.
 
-Do not open `index.html` directly using a `file://` URL. The browser needs HTTP to fetch `app.psc`.
+A JavaScript bootstrap runtime initializes Pyodide and connects Python code to browser APIs. This makes HTML6 a learning and experimentation platform for developers interested in Python-powered web applications.
 
-## How it works
+> **Important:** HTML6 is an independent experimental project, not an official version of HTML or a W3C web standard. Browsers do not natively execute `.psc` files; the current approach relies on a Python runtime powered by Pyodide and WebAssembly.
 
-1. `index.html` includes a `<script type="text/psc" src="./app.psc"></script>` element.
-2. `html6.js` finds PSC script elements and loads Pyodide asynchronously.
-3. The engine fetches each PSC source file and executes it with `runPythonAsync`.
-4. Python imports browser objects with `from js import document`.
-5. Pyodide proxies a Python callback to a browser event listener; Python then updates the DOM.
+## ✨ Features
 
-The engine uses JavaScript internally because browsers do not natively execute Python or recognize `text/psc` as a standard scripting language. The goal is to keep **application logic** Python-first, not to claim that JavaScript has been removed from the browser platform.
+- 🐍 **Python-first application logic** — Experiment with writing browser interactions in Python.
+- 🌐 **Browser integration** — Explore Python access to browser APIs through Pyodide.
+- 🧩 **Familiar web technologies** — Continue using HTML and CSS for structure and styling.
+- ⚡ **WebAssembly-powered runtime** — Run Python in a compatible browser environment through Pyodide.
+- 📚 **Beginner-friendly architecture** — Start with a small prototype and learn how the pieces connect.
+- 🔓 **Open-source development** — Explore the source code, report issues, and contribute improvements.
+- 🧪 **Experimental by design** — Test ideas, identify limitations, and help shape the project's future.
 
-## Project layout
+*Features describe the current approach and project direction; not every planned capability is implemented.*
+
+## 🧠 How HTML6 Works
+
+HTML6 uses a small runtime to connect the different parts of a web application.
+
+```text
+        ┌─────────────────────┐
+        │      index.html     │
+        │   Application UI    │
+        └──────────┬──────────┘
+                   │
+        ┌──────────▼──────────┐
+        │      style.css     │
+        │   Visual styling   │
+        └─────────────────────┘
+
+        ┌─────────────────────┐
+        │      html6.js      │
+        │   Runtime setup    │
+        └──────────┬──────────┘
+                   │
+        ┌──────────▼──────────┐
+        │   Pyodide Runtime   │
+        │ Python in WebAssembly│
+        └──────────┬──────────┘
+                   │
+        ┌──────────▼──────────┐
+        │       app.psc      │
+        │  Python app logic  │
+        └─────────────────────┘
+```
+
+The intended workflow is:
+
+1. The browser loads the HTML page.
+2. The JavaScript runtime initializes the Python environment.
+3. The runtime discovers and loads the application's `.psc` code.
+4. Python executes through Pyodide.
+5. Python interacts with browser APIs through the JavaScript interoperability layer.
+
+The exact capabilities depend on the current runtime implementation.
+
+## 📁 Project Structure
+
+The starter prototype uses a simple file structure:
 
 ```text
 html6/
-├── index.html
-├── style.css
-├── html6.js
-├── app.psc
-├── docs/
-│   ├── learning-path.md
-│   └── troubleshooting.md
-├── .github/workflows/pages.yml
-├── LICENSE
-├── CONTRIBUTING.md
-├── CODE_OF_CONDUCT.md
-└── SECURITY.md
+├── index.html       # Application structure
+├── style.css        # Application styling
+├── html6.js         # Runtime initialization and integration
+├── app.psc          # Python application logic
+├── README.md        # Project documentation
+├── LICENSE          # Open-source license
+└── .github/
+    └── workflows/
+        └── pages.yml  # GitHub Pages deployment workflow
 ```
 
-## Learn HTML6
+The `.psc` extension is a project-specific convention for HTML6 application files. It is not a standard Python file extension.
 
-Start with [`docs/learning-path.md`](docs/learning-path.md), then try changing `message.upper()` to `message[::-1]` in `app.psc`.
+## 🛠️ Getting Started
 
-## Publish with GitHub Pages
+### Prerequisites
 
-1. Create a **public** GitHub repository named `html6` (or your chosen name).
-2. Upload or push the contents of this project to the repository's default branch.
-3. Open **Settings → Pages** and select **GitHub Actions** as the build/deployment source.
-4. Open the **Actions** tab and wait for the Pages workflow to complete.
-5. Your site will be available at `https://YOUR-USERNAME.github.io/html6/`.
+- A modern, compatible web browser.
+- Git, if you want to clone the repository.
+- An internet connection if the runtime loads Pyodide or other dependencies from a remote CDN.
 
-The included workflow publishes the static files from the repository root. Replace `YOUR-USERNAME` with your GitHub username.
+### 1. Clone the repository
 
-## Contributing
+```bash
+git clone https://github.com/Deep-Space-Research-Team/html6.git
+```
 
-Bug reports, documentation improvements, tutorials, examples, and code contributions are welcome. Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request.
+### 2. Enter the project directory
 
-## Security note
+```bash
+cd html6
+```
 
-Only run PSC code you trust. Python executed in Pyodide can access browser APIs exposed to it, including the page DOM. This prototype is not a sandbox for untrusted scripts. See [`SECURITY.md`](SECURITY.md).
+### 3. Start a local web server
 
-## License
+Using Python:
 
-This project is licensed under the MIT License. See [`LICENSE`](LICENSE).
+```bash
+python -m http.server 8000
+```
+
+If your system uses `python3` instead:
+
+```bash
+python3 -m http.server 8000
+```
+
+### 4. Open HTML6
+
+Visit:
+
+```text
+http://localhost:8000
+```
+
+Using a local HTTP server is preferable to opening `index.html` directly because browser security restrictions can affect scripts and runtime loading.
+
+**Troubleshooting:** If the application does not start, open your browser's developer console and check for failed network requests, JavaScript errors, or Pyodide initialization problems.
+
+## 🧪 Try the Prototype
+
+The initial prototype demonstrates a simple text transformation interaction.
+
+It provides a starting point for exploring how:
+
+- A user interacts with a web interface.
+- Application logic is written in Python.
+- Python code accesses browser elements.
+- The runtime connects the Python environment to the page.
+
+The prototype is intentionally small. Its purpose is to test the core idea before expanding the framework.
+
+## 🎯 Project Roadmap
+
+HTML6 is an evolving experiment. The following roadmap describes potential development priorities, not a guarantee that every feature is already available.
+
+- [x] Publish the initial public repository.
+- [x] Create a basic HTML, CSS, JavaScript runtime, and Python-code prototype.
+- [x] Set up GitHub Pages deployment.
+- [ ] Improve runtime initialization and error handling.
+- [ ] Document the `.psc` file convention and loading process.
+- [ ] Add more Python-to-browser interaction examples.
+- [ ] Expand beginner tutorials and learning materials.
+- [ ] Improve browser compatibility and testing.
+- [ ] Develop a clearer API and application structure.
+- [ ] Evaluate performance, security, and production-readiness.
+- [ ] Explore reusable components and developer tooling.
+
+Contributions and feedback can help determine which improvements should come first.
+
+## 🗺️ Learning Path
+
+If you're new to HTML6, follow this learning path:
+
+**Explore → Understand → Modify → Build → Contribute**
+
+1. **Explore:** Run the starter prototype and inspect the interface.
+2. **Understand:** Read `index.html`, `style.css`, `html6.js`, and `app.psc`.
+3. **Modify:** Change the interface or experiment with the Python logic.
+4. **Build:** Try creating a small interactive application.
+5. **Contribute:** Share your findings, report bugs, or propose improvements.
+
+Basic familiarity with HTML, CSS, Python, and JavaScript concepts will help you understand the implementation.
+
+## 🤝 Contributing
+
+Contributions, constructive feedback, bug reports, and educational examples are welcome.
+
+### Ways to contribute
+
+- Report reproducible bugs.
+- Improve documentation and tutorials.
+- Suggest improvements to the runtime architecture.
+- Test the project in different browsers.
+- Submit small examples demonstrating Python-powered interactions.
+- Help identify limitations in the current approach.
+
+### Contribution workflow
+
+1. Fork the repository.
+2. Create a branch for your change.
+3. Make a focused improvement.
+4. Test your changes locally.
+5. Submit a pull request describing the change and its testing.
+
+Please explain what your change does, why it is useful, and whether it introduces any new dependencies.
+
+## 🐛 Issues and Feedback
+
+Found a bug or have an idea?
+
+Visit the repository's [Issues page](https://github.com/Deep-Space-Research-Team/html6/issues) to report a problem or suggest an improvement.
+
+When reporting a bug, include:
+
+- Your browser and operating system.
+- Steps to reproduce the problem.
+- Expected behavior.
+- Actual behavior.
+- Relevant console errors, if available.
+
+Clear, reproducible reports make debugging easier.
+
+## 🔐 Security and Limitations
+
+HTML6 is an experimental project and should not be assumed to be production-ready.
+
+- Python execution in the browser depends on the Pyodide runtime and its supported capabilities.
+- JavaScript remains part of the runtime and browser integration.
+- Loading a Python runtime can increase startup time and resource usage compared with a minimal JavaScript application.
+- Browser compatibility, package support, performance, and error handling require continued testing.
+- Applications should not treat client-side code as a secure place for secrets or privileged operations.
+- Third-party runtime dependencies should be reviewed and kept appropriately maintained.
+
+Please report security concerns responsibly through the repository's documented contact or reporting process.
+
+## 🌐 Links
+
+| Resource | Link |
+|---|---|
+| Official project website | [HTML6 Website](https://deep-space-research-team.github.io/html6/) |
+| Source code | [GitHub Repository](https://github.com/Deep-Space-Research-Team/html6) |
+| Bug reports and ideas | [GitHub Issues](https://github.com/Deep-Space-Research-Team/html6/issues) |
+| Python in the browser | [Pyodide Documentation](https://pyodide.org/en/stable/) |
+| WebAssembly | [WebAssembly.org](https://webassembly.org/) |
+
+## 🏢 About the Project
+
+HTML6 is developed under **Deep Space Research Team**, an independent team exploring software, web technologies, and experimental development ideas.
+
+The project investigates one central question:
+
+**What could web development look like if Python played a more central role in browser-side application logic?**
+
+HTML6 is an attempt to explore that question through a public, evolving prototype.
+
+## 📄 License
+
+HTML6 is released under the **MIT License**. See the [`LICENSE`](LICENSE) file for the applicable terms.
+
+---
+
+<p align="center">
+  <strong>HTML6 — Exploring a Python-First Web.</strong>
+  <br>
+  Built for learning, experimentation, and open-source collaboration.
+</p>
