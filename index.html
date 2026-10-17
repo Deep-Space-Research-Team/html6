@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <meta name="description" content="HTML6 is an experimental Python-first web framework powered by Pyodide and WebAssembly.">
+  <title>HTML6 — Python-Native Web</title>
+  <link rel="stylesheet" href="./style.css">
+  <script defer src="./html6.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="HTML6 home">
+      <span class="brand-icon">H6</span><span>HTML6</span>
+    </a>
+    <span class="engine-badge">PYTHON ENGINE</span>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <span class="eyebrow">AN EXPERIMENT IN PYTHON-FIRST WEB DEVELOPMENT</span>
+      <h1>Python meets the <span>web.</span></h1>
+      <p>Explore an experimental web workflow that uses Python for interactive application logic, powered by WebAssembly.</p>
+    </section>
+
+    <section class="demo-card" aria-labelledby="demo-title">
+      <div class="card-heading">
+        <div><span class="section-label">LIVE PLAYGROUND</span><h2 id="demo-title">Python Text Transformer</h2></div>
+        <span class="python-badge">.psc</span>
+      </div>
+
+      <label for="user-input">Enter your message</label>
+      <input id="user-input" type="text" placeholder="e.g. Hello from HTML6" autocomplete="off" maxlength="500">
+      <button id="transform-button" type="button" disabled>
+        <span>Transform with Python</span><span aria-hidden="true">→</span>
+      </button>
+
+      <div class="output-panel" aria-live="polite">
+        <span class="output-label">OUTPUT</span>
+        <p id="output">Loading HTML6 Python Engine...</p>
+      </div>
+      <p id="engine-status" class="engine-status" role="status">Initializing WebAssembly runtime…</p>
+    </section>
+
+    <section class="learn-card">
+      <span class="section-label">YOUR FIRST STEPS</span>
+      <h2>Learn by changing the code</h2>
+      <ol>
+        <li>Type a message in the input.</li>
+        <li>Open <code>app.psc</code> and find <code>message.upper()</code>.</li>
+        <li>Replace it with <code>message[::-1]</code> to reverse the text.</li>
+        <li>Save, reload the page, and try again.</li>
+      </ol>
+      <p class="note">This is a learning prototype, not a browser-native HTML standard. The engine uses JavaScript internally to initialize Pyodide; application logic is written in Python.</p>
+    </section>
+
+    <footer><span>HTML6 Experimental Framework</span><span>HTML · CSS · Python · WebAssembly</span></footer>
+  </main>
+
+  <script type="text/psc" src="./app.psc"></script>
+</body>
+</html>
