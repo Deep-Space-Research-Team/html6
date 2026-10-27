@@ -1,3 +1,4 @@
+
 # HTML6 — A Python-First Experiment for the Web
 
 **Exploring a new way to build web applications with Python.**
@@ -41,6 +42,8 @@ A JavaScript bootstrap runtime initializes Pyodide and connects Python code to b
 - 📚 **Beginner-friendly architecture** — Start with a small prototype and learn how the pieces connect.
 - 🔓 **Open-source development** — Explore the source code, report issues, and contribute improvements.
 - 🧪 **Experimental by design** — Test ideas, identify limitations, and help shape the project's future.
+- 🛠️ **Runtime diagnostics** — Prototype v0.2.0 introduces a built-in debugging console and clearer runtime status reporting.
+- 🧾 **Improved error reporting** — Runtime initialization and application-loading errors can be surfaced through the status display and diagnostic logs.
 
 *Features describe the current approach and project direction; not every planned capability is implemented.*
 
@@ -55,13 +58,13 @@ HTML6 uses a small runtime to connect the different parts of a web application.
         └──────────┬──────────┘
                    │
         ┌──────────▼──────────┐
-        │      style.css     │
-        │   Visual styling   │
+        │      style.css      │
+        │   Visual styling    │
         └─────────────────────┘
 
         ┌─────────────────────┐
-        │      html6.js      │
-        │   Runtime setup    │
+        │      html6.js       │
+        │ Runtime and Debug   │
         └──────────┬──────────┘
                    │
         ┌──────────▼──────────┐
@@ -70,8 +73,8 @@ HTML6 uses a small runtime to connect the different parts of a web application.
         └──────────┬──────────┘
                    │
         ┌──────────▼──────────┐
-        │       app.psc      │
-        │  Python app logic  │
+        │       app.psc       │
+        │  Python app logic   │
         └─────────────────────┘
 ```
 
@@ -82,6 +85,7 @@ The intended workflow is:
 3. The runtime discovers and loads the application's `.psc` code.
 4. Python executes through Pyodide.
 5. Python interacts with browser APIs through the JavaScript interoperability layer.
+6. The runtime reports its status and exposes diagnostic information for debugging.
 
 The exact capabilities depend on the current runtime implementation.
 
@@ -91,16 +95,22 @@ The starter prototype uses a simple file structure:
 
 ```text
 html6/
-├── index.html       # Application structure
-├── style.css        # Application styling
-├── html6.js         # Runtime initialization and integration
-├── app.psc          # Python application logic
-├── README.md        # Project documentation
-├── LICENSE          # Open-source license
+├── index.html                 # Application structure
+├── style.css                  # Application styling
+├── html6.js                   # Runtime, initialization, and diagnostics
+├── app.psc                    # Python application logic
+├── README.md                  # Project documentation
+├── LICENSE                    # Open-source license
+├── docs/
+│   └── PROTOTYPE-v0.2.md      # Prototype v0.2.0 runtime documentation
+├── tests/
+│   └── MANUAL-TEST-PLAN.md    # Manual testing and regression plan
 └── .github/
     └── workflows/
-        └── pages.yml  # GitHub Pages deployment workflow
+        └── pages.yml          # GitHub Pages deployment workflow
 ```
+
+The `docs/` and `tests/` files above are part of the proposed v0.2.0 documentation layout. Add them to the repository when you create those files.
 
 The `.psc` extension is a project-specific convention for HTML6 application files. It is not a standard Python file extension.
 
@@ -110,6 +120,7 @@ The `.psc` extension is a project-specific convention for HTML6 application file
 
 - A modern, compatible web browser.
 - Git, if you want to clone the repository.
+- Python 3, if you want to run a local development server.
 - An internet connection if the runtime loads Pyodide or other dependencies from a remote CDN.
 
 ### 1. Clone the repository
@@ -148,7 +159,19 @@ http://localhost:8000
 
 Using a local HTTP server is preferable to opening `index.html` directly because browser security restrictions can affect scripts and runtime loading.
 
-**Troubleshooting:** If the application does not start, open your browser's developer console and check for failed network requests, JavaScript errors, or Pyodide initialization problems.
+### Troubleshooting
+
+If the application does not start:
+
+1. Open your browser's developer tools.
+2. Select the **Console** tab and look for JavaScript or Python initialization errors.
+3. Select the **Network** tab and check whether `html6.js`, `app.psc`, and the Pyodide runtime load successfully.
+4. Check the HTML6 engine status displayed on the page.
+5. In Prototype v0.2.0, use the built-in debugging console when it is available.
+6. Confirm that you are running the page through a local HTTP server rather than opening the HTML file directly.
+7. Reload the page after correcting the problem.
+
+Do not share passwords, API keys, private tokens, or other secrets when submitting diagnostic logs.
 
 ## 🧪 Try the Prototype
 
@@ -162,6 +185,95 @@ It provides a starting point for exploring how:
 - The runtime connects the Python environment to the page.
 
 The prototype is intentionally small. Its purpose is to test the core idea before expanding the framework.
+
+## ⚙️ HTML6 Prototype v0.2.0
+
+**Target runtime version: `0.2.0`**
+
+Prototype v0.2.0 focuses on improving the developer experience while preserving the existing HTML, CSS, JavaScript, and Python architecture.
+
+The planned scope includes:
+
+- A clearer runtime initialization process.
+- More informative engine status messages.
+- Improved error reporting for runtime and application startup.
+- A built-in debugging console for runtime diagnostics.
+- A small public JavaScript API for checking runtime status and accessing diagnostic tools.
+- Documentation of the runtime and its supported workflow.
+- A manual test plan for checking the prototype.
+
+> **Versioning note:** The HTML6 runtime version and the Pyodide version are different. HTML6 `0.2.0` identifies the prototype release; Pyodide `0.27.7` identifies the Python runtime dependency used by the current implementation described in this prototype plan.
+
+### Runtime API
+
+The v0.2.0 runtime plan exposes the following JavaScript API through `window.HTML6`:
+
+| Property or method | Purpose |
+|---|---|
+| `HTML6.version` | Returns the HTML6 runtime version. |
+| `HTML6.pyodideVersion` | Identifies the configured Pyodide version. |
+| `HTML6.ready` | Indicates whether the Python runtime has initialized. |
+| `HTML6.status` | Provides the current runtime status. |
+| `HTML6.readyState` | Provides a more descriptive initialization state. |
+| `HTML6.log(...)` | Writes an informational diagnostic message. |
+| `HTML6.debug(...)` | Writes a debugging message. |
+| `HTML6.showDebug()` | Opens or displays the built-in debugging console. |
+| `HTML6.hideDebug()` | Hides the built-in debugging console. |
+| `HTML6.getPythonVersion()` | Retrieves the Python version after runtime initialization. |
+
+The exact behavior of these methods depends on the installed `html6.js` implementation. The table describes the planned v0.2.0 API; it should not be treated as proof that every method is implemented in the current repository.
+
+### Checking the Runtime
+
+After the v0.2.0 runtime implementation has been installed, open the browser's developer console and try:
+
+```javascript
+window.HTML6
+```
+
+Check the runtime version:
+
+```javascript
+window.HTML6.version
+```
+
+Check whether the runtime has initialized:
+
+```javascript
+window.HTML6.ready
+```
+
+Display the debugging console:
+
+```javascript
+window.HTML6.showDebug()
+```
+
+These examples assume that the installed runtime implements the listed API. If a method is missing, check that the correct `html6.js` file is loaded.
+
+### Debugging Console
+
+The built-in debugging console is intended to make the prototype easier to troubleshoot without relying exclusively on the browser's developer tools.
+
+It should help developers inspect:
+
+- Runtime initialization progress.
+- Python runtime readiness.
+- Application script loading.
+- Informational diagnostic messages.
+- Runtime and application-loading errors.
+
+The debugging console is a development aid, not a security boundary. It must not display confidential information or expose sensitive application data.
+
+For implementation details and the planned API, see [`docs/PROTOTYPE-v0.2.md`](docs/PROTOTYPE-v0.2.md).
+
+### Testing v0.2.0
+
+Use the manual test plan to check runtime initialization, application loading, diagnostics, error handling, and regression behavior.
+
+Test plan: [`tests/MANUAL-TEST-PLAN.md`](tests/MANUAL-TEST-PLAN.md).
+
+Do not mark v0.2.0 as verified until the tests have actually been executed in a supported browser.
 
 ## 🎯 Project Roadmap
 
@@ -178,6 +290,9 @@ HTML6 is an evolving experiment. The following roadmap describes potential devel
 - [ ] Develop a clearer API and application structure.
 - [ ] Evaluate performance, security, and production-readiness.
 - [ ] Explore reusable components and developer tooling.
+- [ ] Implement and verify the HTML6 Prototype v0.2.0 runtime improvements.
+- [ ] Complete the v0.2.0 manual test plan.
+- [ ] Expand examples demonstrating debugging and error handling.
 
 Contributions and feedback can help determine which improvements should come first.
 
@@ -191,7 +306,8 @@ If you're new to HTML6, follow this learning path:
 2. **Understand:** Read `index.html`, `style.css`, `html6.js`, and `app.psc`.
 3. **Modify:** Change the interface or experiment with the Python logic.
 4. **Build:** Try creating a small interactive application.
-5. **Contribute:** Share your findings, report bugs, or propose improvements.
+5. **Debug:** Inspect runtime status and use available diagnostic tools.
+6. **Contribute:** Share your findings, report bugs, or propose improvements.
 
 Basic familiarity with HTML, CSS, Python, and JavaScript concepts will help you understand the implementation.
 
@@ -207,6 +323,7 @@ Contributions, constructive feedback, bug reports, and educational examples are 
 - Test the project in different browsers.
 - Submit small examples demonstrating Python-powered interactions.
 - Help identify limitations in the current approach.
+- Improve the runtime diagnostics and manual test coverage.
 
 ### Contribution workflow
 
@@ -217,6 +334,8 @@ Contributions, constructive feedback, bug reports, and educational examples are 
 5. Submit a pull request describing the change and its testing.
 
 Please explain what your change does, why it is useful, and whether it introduces any new dependencies.
+
+For runtime changes, include the browser and operating system used for testing, steps to reproduce any failures, and relevant console output.
 
 ## 🐛 Issues and Feedback
 
@@ -231,6 +350,7 @@ When reporting a bug, include:
 - Expected behavior.
 - Actual behavior.
 - Relevant console errors, if available.
+- Whether the problem occurs during runtime initialization, Python execution, or browser interaction.
 
 Clear, reproducible reports make debugging easier.
 
@@ -244,8 +364,33 @@ HTML6 is an experimental project and should not be assumed to be production-read
 - Browser compatibility, package support, performance, and error handling require continued testing.
 - Applications should not treat client-side code as a secure place for secrets or privileged operations.
 - Third-party runtime dependencies should be reviewed and kept appropriately maintained.
+- Application code loaded into the browser should be treated as executable code. Only load code from sources you trust.
+- Diagnostic logs may contain application details. Avoid recording secrets, credentials, tokens, or personal data.
+- The debugging console is intended for development and troubleshooting; it does not isolate untrusted Python code or make it safe to execute.
+- Cross-origin resource loading and browser security policies can affect whether external application files load successfully.
 
 Please report security concerns responsibly through the repository's documented contact or reporting process.
+
+## 🧪 Testing
+
+HTML6 is experimental, so runtime changes should be tested before being described as stable.
+
+The manual test plan for Prototype v0.2.0 covers:
+
+- Initial page loading.
+- Pyodide initialization.
+- Python application execution.
+- Runtime version and readiness reporting.
+- Debugging console visibility.
+- Diagnostic message output.
+- Missing or empty application scripts.
+- Application-loading and initialization failures.
+- Recovery after a failed startup.
+- Regression testing of the existing text transformation demo.
+
+See [`tests/MANUAL-TEST-PLAN.md`](tests/MANUAL-TEST-PLAN.md) for the test cases.
+
+The test plan is documentation, not a test report. Record actual results only after running the tests.
 
 ## 🌐 Links
 
